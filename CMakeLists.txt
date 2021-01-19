@@ -12,8 +12,8 @@ link_directories(
 )
 
 add_executable(lk
-        main.cpp
+        src/main.cpp
         src/glad.c
-        )
+        src/GlWindow.cpp src/GlWindow.h src/VAO.cpp src/VAO.h src/Matrix.cpp src/Matrix.h)
 
 target_link_libraries(lk glfw3)
