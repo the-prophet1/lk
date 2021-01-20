@@ -14,6 +14,6 @@ link_directories(
 add_executable(lk
         src/main.cpp
         src/glad.c
-        src/GlWindow.cpp src/GlWindow.h src/VAO.cpp src/VAO.h src/Matrix.cpp src/Matrix.h)
+        src/GlWindow.cpp src/GlWindow.h src/VAO.cpp src/VAO.h src/Matrix.hpp src/VertexShader.cpp src/VertexShader.h src/FragmentShader.cpp src/FragmentShader.h)
 
 target_link_libraries(lk glfw3)

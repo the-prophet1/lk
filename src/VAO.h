@@ -1,19 +1,43 @@
 #ifndef LK_VAO_H
 #define LK_VAO_H
 
-#include "VBO.h"
+#include "Matrix.hpp"
+
+enum ObjectType {
+    VBOType,
+    VEOType,
+};
 
 class VAO {
 public:
     VAO();
-    void Bind();
-    void SetValue();
 
-    void DrawTriangle();
+    VAO &SetVBOValue(Matrix<float> &matrix);
+
+    VAO &SetVBOValue(Matrix<float> &&matrix);
+
+    VAO &SetVEOValue(Matrix<int> &matrix);
+
+    VAO &SetVEOValue(Matrix<int> &&matrix);
+
+    VAO &DrawTriangle();
+
+    VAO &DrawElemTriangle();
+
+private:
+    VAO &BindVBO();
+    VAO &UnbindVBO();
+
+    VAO &BindVEO();
+    VAO &UnbindVEO();
+
 
 private:
     unsigned int vao{};
     unsigned int vbo{};
+    unsigned int veo{};
+    Matrix<float> ma{};
+    Matrix<int> indices{};
 };
 
 

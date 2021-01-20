@@ -1,5 +1,6 @@
 #include <iostream>
 #include "GlWindow.h"
+#include "VAO.h"
 
 float vertices[] = {
         0.0f, 0.0f, 0.0f,
@@ -14,6 +15,19 @@ float vertices2[] = {
         0.0f, -0.5f, 0.0f
 };
 
+
+float vertices3[] = {
+        -0.5f, 0.5f, 0.0f,
+        0.0f, 0.5f, 0.0f,
+        0.0f, 0.0f, 0.0f,
+        -0.5f, 0.0f, 0.0f,
+};
+
+int indices[] = { // 注意索引从0开始!
+        0, 1, 3, // 第一个三角形
+        1, 2, 3  // 第二个三角形
+};
+
 const char *vertexShaderSource = "#version 330 core\n"
                                  "layout (location = 0) in vec3 aPos;\n"
                                  "\n"
@@ -21,7 +35,7 @@ const char *vertexShaderSource = "#version 330 core\n"
                                  "    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
                                  "}\0";
 
-const char* fragmentShaderSource = "#version 330 core\n"
+const char *fragmentShaderSource = "#version 330 core\n"
                                    "out vec4 FragColor;\n"
                                    "\n"
                                    "void main()\n"
@@ -45,11 +59,10 @@ int main() {
     glCompileShader(vertexShader);
 
     //check compile
-    int  success;
+    int success;
     char infoLog[512];
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
+    if (!success) {
         glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
         std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
@@ -61,8 +74,7 @@ int main() {
 
     //check compile
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
+    if (!success) {
         glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
         std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
@@ -75,7 +87,7 @@ int main() {
 
     // check link
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if(!success) {
+    if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
         std::cout << "ERROR::LINK_FAILED\n" << infoLog << std::endl;
     }
@@ -83,38 +95,17 @@ int main() {
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
+    VAO vao1;
+    vao1.SetVBOValue(Matrix<float>(vertices, 3, 3));
 
-    //create vertex buffer object and bind buffer
-    unsigned int VBO,VAO;
-    glGenVertexArrays(1, &VAO);     //生成VAO
-    glGenBuffers(1, &VBO);      //生成VBO
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    VAO vao2;
+    vao2.SetVBOValue(Matrix<float>(vertices2, 3, 3));
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
-    glEnableVertexAttribArray(0);
+    VAO vao3;
+    vao3.SetVBOValue(Matrix<float>(vertices3, 4, 3));
+    vao3.SetVEOValue(Matrix<int>(indices, 2, 3));
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-    {
-        unsigned int VBO2,VAO2;
-        glGenVertexArrays(1, &VAO2);
-        glGenBuffers(1, &VBO2);      //生成VBO
-        glBindVertexArray(VAO2);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-
-        glWindow.TestDo(shaderProgram,VAO,VAO2);
-    }
-
-
-
+    glWindow.TestDo(shaderProgram, vao1, vao3);
 
     return 0;
 }

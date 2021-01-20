@@ -64,19 +64,14 @@ void GlWindow::SetClearColor(float red, float green, float blue, float alpha) {
 }
 
 
-void GlWindow::TestDo(unsigned int shaderProgram, unsigned int VAO, unsigned int VAO2) {
+void GlWindow::TestDo(unsigned int shaderProgram, VAO VAO1, VAO VAO2) {
     while (!glfwWindowShouldClose(glWindow)) {
 
         clearColor();
         glUseProgram(shaderProgram);
 
-        glBindVertexArray(VAO2);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-
+        VAO1.DrawTriangle();
+        VAO2.DrawElemTriangle();
 
         // check event
         glfwSwapBuffers(glWindow);
