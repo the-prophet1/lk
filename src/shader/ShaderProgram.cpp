@@ -7,20 +7,13 @@ ShaderProgram::ShaderProgram() {
 }
 
 
-ShaderProgram &ShaderProgram::Link(int count, ...) {
+ShaderProgram &ShaderProgram::Link(std::initializer_list<Shader*> il) {
     if (error != nullptr) {
         return *this;
     }
-
-    va_list ap;  //声明一个va_list变量
-    va_start(ap, count);
-    for (int i = 0; i < count; i++) {
-        
+    for (const auto & ptr : il) {
+        glAttachShader(programID,ptr->GetID());
     }
-
-    va_end(ap);  //用于清理
-
-
     glLinkProgram(programID);
     checkLink();
     return *this;
@@ -36,5 +29,13 @@ void ShaderProgram::checkLink() {
 }
 
 const char *ShaderProgram::Error() {
-    return error;
+    if (error != nullptr) {
+        return std::string("ShaderProgram error:").append(error).c_str();
+    } else {
+        return nullptr;
+    }
+}
+
+void ShaderProgram::Use() {
+    glUseProgram(programID);
 }

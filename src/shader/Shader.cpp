@@ -44,11 +44,12 @@ void Shader::checkCompile() {
 }
 
 Shader::~Shader() {
-    if (shaderID != 0)
+    if (shaderID != 0){
         glDeleteShader(shaderID);
+    }
 }
 
-unsigned int Shader::GetID() {
+unsigned int Shader::GetID() const {
     return shaderID;
 }
 

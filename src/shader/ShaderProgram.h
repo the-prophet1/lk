@@ -8,10 +8,11 @@ class ShaderProgram {
 public:
     ShaderProgram();
 
-
-    ShaderProgram &Link(int count, ...);
+    ShaderProgram &Link(std::initializer_list<Shader*> il);
 
     const char *Error();
+
+    void Use();
 
 private:
     void checkLink();

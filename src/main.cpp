@@ -48,15 +48,12 @@ const char *fragmentShaderSource = "#version 330 core\n"
                                    "}\0";
 
 int main() {
-
-
-
     GlWindow glWindow = GlWindow(3, 3);
     if (glWindow.CreateWindow(800, 600, "my window") != nullptr) {
         return 0;
     }
 
-    glWindow.SetClearColor(0.5f, 1.0f, 0.5f, 1.0f);
+    glWindow.SetClearColor(1.0f, 1.0f, 0.5f, 1.0f);
 
     //create vertex shader and compile source
     Shader* vertexShader = new VertexShader(R"(D:\source\C++\lk\vert\triangle.shader)");
@@ -73,22 +70,11 @@ int main() {
     }
 
     ShaderProgram shaderProgram;
-    shaderProgram.PushShader(vertexShader).PushShader(fragmentShader)
-    //create shader attach program and link
-    unsigned int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
+    shaderProgram.Link({vertexShader,fragmentShader});
 
-    // check link
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-        std::cout << "ERROR::LINK_FAILED\n" << infoLog << std::endl;
-    }
     //delete shader
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    delete vertexShader;
+    delete fragmentShader;
 
     VAO vao1;
     vao1.SetVBOValue(Matrix<float>(vertices, 3, 3));

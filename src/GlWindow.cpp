@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include "GlWindow.h"
 
+
 GlWindow::GlWindow(int glVersionMajor, int glVersionMinor, int glProfile) {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
@@ -64,11 +65,11 @@ void GlWindow::SetClearColor(float red, float green, float blue, float alpha) {
 }
 
 
-void GlWindow::TestDo(unsigned int shaderProgram, VAO VAO1, VAO VAO2) {
+void GlWindow::TestDo(ShaderProgram& shaderProgram, VAO VAO1, VAO VAO2) {
     while (!glfwWindowShouldClose(glWindow)) {
 
         clearColor();
-        glUseProgram(shaderProgram);
+        shaderProgram.Use();
 
         VAO1.DrawTriangle();
         VAO2.DrawElemTriangle();

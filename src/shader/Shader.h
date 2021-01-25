@@ -15,7 +15,7 @@ public:
 
     virtual const char *Error() = 0;
 
-    virtual unsigned int GetID();
+    virtual unsigned int GetID() const;
 
     virtual ~Shader();
 

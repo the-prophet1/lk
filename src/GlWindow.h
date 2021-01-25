@@ -6,6 +6,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "VAO.h"
+#include "shader/ShaderProgram.h"
 
 struct RGBA {
     float R;
@@ -24,7 +25,7 @@ public:
 
     void Do();
 
-    void TestDo(unsigned int shaderProgram, VAO VAO1, VAO VAO2);
+    void TestDo(ShaderProgram& shaderProgram, VAO VAO1, VAO VAO2);
 
     void SetClearColor(float red, float green, float blue, float alpha);
 

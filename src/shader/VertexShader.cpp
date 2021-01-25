@@ -8,5 +8,10 @@ VertexShader::VertexShader(std::string file) : Shader(std::move(file)) {
 }
 
 const char *VertexShader::Error() {
-    return std::string("VertexShader error:").append(error).c_str();
+    if (error != nullptr) {
+        return std::string("VertexShader error:").append(error).c_str();
+    } else {
+        return nullptr;
+    }
+
 }
