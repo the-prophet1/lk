@@ -20,6 +20,8 @@ public:
 
     int Row();
 
+    const std::vector<T>& GetM();
+
 private:
     std::vector<T> m;
     int row{};
@@ -64,6 +66,11 @@ void Matrix<T>::Set(T *matrix, int r, int c) {
             m.push_back(matrix[i * c + j]);
         }
     }
+}
+
+template<typename T>
+const std::vector<T> &Matrix<T>::GetM() {
+    return m;
 }
 
 #endif //LK_MATRIX_HPP

@@ -13,25 +13,24 @@ VAO &VAO::BindVBO() {
     return *this;
 }
 
-VAO &VAO::DrawTriangle() {
-    glBindVertexArray(vao);
-    glDrawArrays(GL_TRIANGLES, 0, ma.Row());
-    return *this;
-}
+VAO &VAO::SetVBOValue() {
+    std::vector<float> buffer;
+    for (auto &m : matrices) {
+        buffer.insert(buffer.end(), m.GetM().begin(), m.GetM().end());
+    }
 
-VAO &VAO::SetVBOValue(Matrix<float> &matrix) {
-    ma = matrix;
     this->BindVBO();
-
-    glBufferData(GL_ARRAY_BUFFER, matrix.ByteSize(), matrix.Data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, matrix.Column(), GL_FLOAT, GL_FALSE, 0, (void *) nullptr);
-    glEnableVertexAttribArray(0);
+    glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer.data(), GL_STATIC_DRAW);
+    int index = 0;
+    for (int i = 0; i < matrices.size(); ++i) {
+        glVertexAttribPointer(i, matrices[i].Column(), GL_FLOAT, GL_FALSE, 0, (void *) index);
+        glEnableVertexAttribArray(i);
+        index += matrices[i].ByteSize();
+    }
+    this->UnbindVBO();
     return *this;
 }
 
-VAO &VAO::SetVBOValue(Matrix<float> &&matrix) {
-    return SetVBOValue(matrix);
-}
 
 VAO &VAO::UnbindVBO() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -67,4 +66,18 @@ VAO &VAO::DrawElemTriangle() {
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, indices.Row() * indices.Column(), GL_UNSIGNED_INT, nullptr);
     return *this;
+}
+
+VAO &VAO::PushVBOValue(Matrix<float> &matrix) {
+    matrices.push_back(matrix);
+    return *this;
+}
+
+VAO &VAO::PushVBOValue(Matrix<float> &&matrix) {
+    PushVBOValue(matrix);
+    return *this;
+}
+
+unsigned int VAO::GetVaoId() const {
+    return vao;
 }

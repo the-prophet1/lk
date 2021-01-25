@@ -5,7 +5,7 @@
 #include <map>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "VAO.h"
+#include "object/VAO.h"
 #include "shader/ShaderProgram.h"
 
 struct RGBA {
@@ -25,7 +25,7 @@ public:
 
     void Do();
 
-    void TestDo(ShaderProgram& shaderProgram, VAO VAO1, VAO VAO2);
+    void TestDo(ShaderProgram& shaderProgram, const VAO& VAO1);
 
     void SetClearColor(float red, float green, float blue, float alpha);
 
@@ -41,7 +41,7 @@ private:
 private:
     GLFWwindow *glWindow;
     std::map<int, const char *> errMap;
-    RGBA backgroud;
+    RGBA background;
 };
 
 

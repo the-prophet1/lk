@@ -7,7 +7,7 @@ FragmentShader::FragmentShader(std::string file) : Shader(std::move(file)) {
 
 const char *FragmentShader::Error() {
     if (error != nullptr) {
-        return std::string("FragmentShader error:").append(error).c_str();
+        return error;
     } else {
         return nullptr;
     }

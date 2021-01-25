@@ -1,5 +1,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <cmath>
+#include <ctime>
+#include <iostream>
+#include <pthread_time.h>
 #include "GlWindow.h"
 
 
@@ -56,7 +60,7 @@ void GlWindow::InputKeyboard(int key) {
 }
 
 void GlWindow::SetClearColor(float red, float green, float blue, float alpha) {
-    backgroud = {
+    background = {
             .R =  red,
             .G = green,
             .B = blue,
@@ -65,14 +69,12 @@ void GlWindow::SetClearColor(float red, float green, float blue, float alpha) {
 }
 
 
-void GlWindow::TestDo(ShaderProgram& shaderProgram, VAO VAO1, VAO VAO2) {
+void GlWindow::TestDo(ShaderProgram &shaderProgram, const VAO& vao) {
     while (!glfwWindowShouldClose(glWindow)) {
-
         clearColor();
-        shaderProgram.Use();
-
-        VAO1.DrawTriangle();
-        VAO2.DrawElemTriangle();
+        if (shaderProgram.DrawTriangle(vao).Error() != nullptr){
+            std::cout<< shaderProgram.Error() << std::endl;
+        }
 
         // check event
         glfwSwapBuffers(glWindow);
@@ -81,6 +83,6 @@ void GlWindow::TestDo(ShaderProgram& shaderProgram, VAO VAO1, VAO VAO2) {
 }
 
 void GlWindow::clearColor() {
-    glClearColor(backgroud.R, backgroud.G, backgroud.B, backgroud.A);
+    glClearColor(background.R, background.G, background.B, background.A);
     glClear(GL_COLOR_BUFFER_BIT);
 }

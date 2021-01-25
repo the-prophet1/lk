@@ -1,7 +1,7 @@
 #ifndef LK_VAO_H
 #define LK_VAO_H
 
-#include "Matrix.hpp"
+#include "../tool/Matrix.hpp"
 
 enum ObjectType {
     VBOType,
@@ -12,23 +12,27 @@ class VAO {
 public:
     VAO();
 
-    VAO &SetVBOValue(Matrix<float> &matrix);
+    VAO &PushVBOValue(Matrix<float> &matrix);
 
-    VAO &SetVBOValue(Matrix<float> &&matrix);
+    VAO &PushVBOValue(Matrix<float> &&matrix);
+
+    VAO &SetVBOValue();
 
     VAO &SetVEOValue(Matrix<int> &matrix);
 
     VAO &SetVEOValue(Matrix<int> &&matrix);
 
-    VAO &DrawTriangle();
-
     VAO &DrawElemTriangle();
+
+    unsigned int GetVaoId() const;
 
 private:
     VAO &BindVBO();
+
     VAO &UnbindVBO();
 
     VAO &BindVEO();
+
     VAO &UnbindVEO();
 
 
@@ -36,7 +40,8 @@ private:
     unsigned int vao{};
     unsigned int vbo{};
     unsigned int veo{};
-    Matrix<float> ma{};
+    std::vector<Matrix<float>> matrices{};
+
     Matrix<int> indices{};
 };
 

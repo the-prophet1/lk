@@ -1,30 +1,27 @@
 #include <iostream>
 #include "GlWindow.h"
-#include "VAO.h"
+#include "object/VAO.h"
 #include "shader/Shader.h"
 #include "shader/VertexShader.h"
 #include "shader/FragmentShader.h"
 #include "shader/ShaderProgram.h"
 
 float vertices[] = {
-        0.0f, 0.0f, 0.0f,
-        0.5f, 0.0f, 0.0f,
-        0.0f, 0.5f, 0.0f
-};
-
-
-float vertices2[] = {
-        0.0f, 0.0f, 0.0f,
-        -0.5f, 0.0f, 0.0f,
-        0.0f, -0.5f, 0.0f
-};
-
-
-float vertices3[] = {
-        -0.5f, 0.5f, 0.0f,
         0.0f, 0.5f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        -0.5f, 0.0f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f
+};
+
+float color[] = {
+        1.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f
+};
+
+float texCoords[] = {
+        0.0f, 0.0f, // 左下角
+        1.0f, 0.0f, // 右下角
+        0.5f, 1.0f // 上中
 };
 
 int indices[] = { // 注意索引从0开始!
@@ -52,41 +49,37 @@ int main() {
     if (glWindow.CreateWindow(800, 600, "my window") != nullptr) {
         return 0;
     }
-
-    glWindow.SetClearColor(1.0f, 1.0f, 0.5f, 1.0f);
+    glWindow.SetClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     //create vertex shader and compile source
-    Shader* vertexShader = new VertexShader(R"(D:\source\C++\lk\vert\triangle.shader)");
-    auto err = vertexShader->LoadSource().Compile().Error();
-    if (err != nullptr){
-        std::cout << err << std::endl;
+    Shader *vertexShader = new VertexShader(R"(D:1\source\C++\lk\vert\triangle.shader)");
+    if (vertexShader->LoadSource().Compile().Error() != nullptr) {
+        std::cout << vertexShader->Error() << std::endl;
     }
 
     //create fragment shader and compile source
-    Shader* fragmentShader = new FragmentShader(R"(D:\source\C++\lk\frag\triangle.shader)");
-    err = fragmentShader->LoadSource().Compile().Error();
-    if (err != nullptr){
-        std::cout << err << std::endl;
+    Shader *fragmentShader = new FragmentShader(R"(D:\source\C++\lk\frag\triangle.shader)");
+    if (fragmentShader->LoadSource().Compile().Error() != nullptr) {
+        std::cout << vertexShader->Error() << std::endl;
     }
 
     ShaderProgram shaderProgram;
-    shaderProgram.Link({vertexShader,fragmentShader});
+    if (shaderProgram.Link({vertexShader, fragmentShader}).Error() != nullptr) {
+        std::cout << shaderProgram.Error() << std::endl;
+    }
 
     //delete shader
     delete vertexShader;
     delete fragmentShader;
 
     VAO vao1;
-    vao1.SetVBOValue(Matrix<float>(vertices, 3, 3));
+    vao1.PushVBOValue(Matrix<float>(vertices, 3, 3));
+    vao1.PushVBOValue(Matrix<float>(color, 3, 3));
+    vao1.SetVBOValue();
 
-    VAO vao2;
-    vao2.SetVBOValue(Matrix<float>(vertices2, 3, 3));
+    shaderProgram.PushVAO(vao1);
 
-    VAO vao3;
-    vao3.SetVBOValue(Matrix<float>(vertices3, 4, 3));
-    vao3.SetVEOValue(Matrix<int>(indices, 2, 3));
-
-    glWindow.TestDo(shaderProgram, vao1, vao3);
+    glWindow.TestDo(shaderProgram,vao1);
 
     return 0;
 }
