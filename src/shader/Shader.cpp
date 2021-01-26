@@ -8,7 +8,7 @@ Shader::Shader(std::string file) : file(std::move(file)) {
 }
 
 Shader &Shader::Compile() {
-    if (error != nullptr) {
+    if (!error.empty()) {
         return *this;
     }
     const char *s = source.c_str();
@@ -19,12 +19,12 @@ Shader &Shader::Compile() {
 }
 
 Shader &Shader::LoadSource() {
-    if (error != nullptr) {
+    if (!error.empty()) {
         return *this;
     }
     std::ifstream ifStream(file);
     if (!ifStream.is_open()) {
-        error = "file doesn't exist";
+        error.append("file doesn't exist: ").append(file);
         return *this;
     }
     std::stringstream buffer;
@@ -44,12 +44,12 @@ void Shader::checkCompile() {
 }
 
 Shader::~Shader() {
-    if (shaderID != 0){
+    if (shaderID != 0) {
         glDeleteShader(shaderID);
     }
 }
 
-unsigned int Shader::GetID() const {
+unsigned int Shader::GetShaderID() const {
     return shaderID;
 }
 

@@ -9,11 +9,11 @@ ShaderProgram::ShaderProgram() {
 
 
 ShaderProgram &ShaderProgram::Link(std::initializer_list<Shader *> il) {
-    if (error != nullptr) {
+    if (!error.empty()) {
         return *this;
     }
     for (const auto &ptr : il) {
-        glAttachShader(programID, ptr->GetID());
+        glAttachShader(programID, ptr->GetShaderID());
     }
     glLinkProgram(programID);
     checkLink();
@@ -21,6 +21,9 @@ ShaderProgram &ShaderProgram::Link(std::initializer_list<Shader *> il) {
 }
 
 void ShaderProgram::checkLink() {
+    if (!error.empty()) {
+        return;
+    }
     int success;
     glGetProgramiv(programID, GL_LINK_STATUS, &success);
     if (!success) {
@@ -30,8 +33,8 @@ void ShaderProgram::checkLink() {
 }
 
 const char *ShaderProgram::Error() {
-    if (error != nullptr) {
-        return error;
+    if (!error.empty()) {
+        return error.c_str();
     } else {
         return nullptr;
     }
@@ -39,11 +42,11 @@ const char *ShaderProgram::Error() {
 
 
 ShaderProgram &ShaderProgram::SetUniform(const std::string &name, float v1, float v2, float v3, float v4) {
-    if (error != nullptr) {
+    if (!error.empty()) {
         return *this;
     }
     int location = findUniform(name);
-    if (location == -1) {
+    if (!error.empty()) {
         return *this;
     }
     glUniform4f(location, v1, v2, v3, v4);
@@ -51,11 +54,11 @@ ShaderProgram &ShaderProgram::SetUniform(const std::string &name, float v1, floa
 }
 
 ShaderProgram &ShaderProgram::SetUniform(const std::string &name, int v1, int v2, int v3, int v4) {
-    if (error != nullptr) {
+    if (!error.empty()) {
         return *this;
     }
     int location = findUniform(name);
-    if (location == -1) {
+    if (!error.empty()) {
         return *this;
     }
     glUniform4i(location, v1, v2, v3, v4);
@@ -63,26 +66,50 @@ ShaderProgram &ShaderProgram::SetUniform(const std::string &name, int v1, int v2
 }
 
 int ShaderProgram::findUniform(const std::string &name) {
+    if (!error.empty()) {
+        return -1;
+    }
     int location = glGetUniformLocation(programID, name.c_str());
     if (location == -1) {
-        error = "Not find uniform location";
+        error.append("Not find uniform location: ").append(name);
     }
     glUseProgram(programID);
     return location;
 }
 
-ShaderProgram &ShaderProgram::PushVAO(const VAO &vao) {
-    if (error != nullptr) {
+
+ShaderProgram &ShaderProgram::DrawTriangle(const Resource &resource) {
+    if (!error.empty()) {
         return *this;
     }
-    vaos.push_back(vao);
+    glUseProgram(programID);
+    if (resource.GetTextureID() != 0) {
+        glBindTexture(GL_TEXTURE_2D, resource.GetTextureID());
+    }
+    if (resource.GetVaoID() != 0) {
+        glBindVertexArray(resource.GetVaoID());
+    }
+
+    glDrawArrays(GL_TRIANGLES, 0, 3);
     return *this;
 }
 
-ShaderProgram &ShaderProgram::DrawTriangle(const VAO &vao) {
-
+ShaderProgram &ShaderProgram::DrawElements(const Resource &resource) {
+    if (!error.empty()) {
+        return *this;
+    }
     glUseProgram(programID);
-    glBindVertexArray(vao.GetVaoId());
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    if (resource.GetTextureID() != 0) {
+        glBindTexture(GL_TEXTURE_2D, resource.GetTextureID());
+    }
+    if (resource.GetVaoID() != 0) {
+        glBindVertexArray(resource.GetVaoID());
+    }
+    glDrawElements(GL_TRIANGLES, resource.GetIndices().Row() * resource.GetIndices().Column(), GL_UNSIGNED_INT,
+                   nullptr);
     return *this;
+}
+
+ShaderProgram::~ShaderProgram() {
+    glDeleteProgram(programID);
 }

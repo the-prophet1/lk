@@ -3,22 +3,25 @@
 
 
 #include "Shader.h"
-#include "../object/VAO.h"
+#include "../object/Resource.h"
+
+typedef std::string string;
 
 class ShaderProgram {
 public:
     ShaderProgram();
 
+    ~ShaderProgram();
+
     ShaderProgram &Link(std::initializer_list<Shader *> il);
 
+    ShaderProgram &SetUniform(const string &name, float v1, float v2, float v3, float v4);
 
-    ShaderProgram &SetUniform(const std::string &name, float v1, float v2, float v3, float v4);
+    ShaderProgram &SetUniform(const string &name, int v1, int v2, int v3, int v4);
 
-    ShaderProgram &SetUniform(const std::string &name, int v1, int v2, int v3, int v4);
+    ShaderProgram &DrawTriangle(const Resource& resource);
 
-    ShaderProgram &PushVAO(const VAO& vao);
-
-    ShaderProgram &DrawTriangle(const VAO& vao);
+    ShaderProgram &DrawElements(const Resource& resource);
 
     const char *Error();
 
@@ -30,9 +33,8 @@ private:
 
 private:
     unsigned int programID;
-    const char *error{};
+    string error{};
     char linkError[CompileInfoSize]{};
-    std::vector<VAO> vaos;
 };
 
 

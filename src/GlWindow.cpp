@@ -69,10 +69,10 @@ void GlWindow::SetClearColor(float red, float green, float blue, float alpha) {
 }
 
 
-void GlWindow::TestDo(ShaderProgram &shaderProgram, const VAO& vao) {
+void GlWindow::TestDo(ShaderProgram &shaderProgram, const Resource& vao) {
     while (!glfwWindowShouldClose(glWindow)) {
         clearColor();
-        if (shaderProgram.DrawTriangle(vao).Error() != nullptr){
+        if (shaderProgram.DrawElements(vao).Error() != nullptr){
             std::cout<< shaderProgram.Error() << std::endl;
         }
 

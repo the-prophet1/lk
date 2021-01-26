@@ -1,27 +1,29 @@
 #include <iostream>
 #include "GlWindow.h"
-#include "object/VAO.h"
 #include "shader/Shader.h"
 #include "shader/VertexShader.h"
 #include "shader/FragmentShader.h"
 #include "shader/ShaderProgram.h"
 
 float vertices[] = {
-        0.0f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f
+        -0.5f, 0.5f, 0.0f,       //左上角
+        0.5f, 0.5f, 0.0f,      //右上角
+        0.5f, -0.5f, 0.0f,     //右下角
+        -0.5f, -0.5f, 0.0f,        //左下角
 };
 
 float color[] = {
-        1.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 1.0f
+        0.0f, 1.0f, 1.0f,
+        0.0f, 1.0f, 1.0f,
+        0.0f, 1.0f, 1.0f,
+        0.0f, 1.0f, 1.0f,
 };
 
 float texCoords[] = {
-        0.0f, 0.0f, // 左下角
-        1.0f, 0.0f, // 右下角
-        0.5f, 1.0f // 上中
+        0.0f, 1.0f, // 左上角
+        1.0f, 1.0f, // 右上角
+        1.0f, 0.0f, //右下角
+        0.0f, 0.0f // 左下角
 };
 
 int indices[] = { // 注意索引从0开始!
@@ -29,20 +31,6 @@ int indices[] = { // 注意索引从0开始!
         1, 2, 3  // 第二个三角形
 };
 
-const char *vertexShaderSource = "#version 330 core\n"
-                                 "layout (location = 0) in vec3 aPos;\n"
-                                 "\n"
-                                 "void main(){\n"
-                                 "    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                                 "}\0";
-
-const char *fragmentShaderSource = "#version 330 core\n"
-                                   "out vec4 FragColor;\n"
-                                   "\n"
-                                   "void main()\n"
-                                   "{\n"
-                                   "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-                                   "}\0";
 
 int main() {
     GlWindow glWindow = GlWindow(3, 3);
@@ -52,7 +40,7 @@ int main() {
     glWindow.SetClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     //create vertex shader and compile source
-    Shader *vertexShader = new VertexShader(R"(D:1\source\C++\lk\vert\triangle.shader)");
+    Shader *vertexShader = new VertexShader(R"(D:\source\C++\lk\vert\triangle.shader)");
     if (vertexShader->LoadSource().Compile().Error() != nullptr) {
         std::cout << vertexShader->Error() << std::endl;
     }
@@ -60,7 +48,7 @@ int main() {
     //create fragment shader and compile source
     Shader *fragmentShader = new FragmentShader(R"(D:\source\C++\lk\frag\triangle.shader)");
     if (fragmentShader->LoadSource().Compile().Error() != nullptr) {
-        std::cout << vertexShader->Error() << std::endl;
+        std::cout << fragmentShader->Error() << std::endl;
     }
 
     ShaderProgram shaderProgram;
@@ -72,14 +60,17 @@ int main() {
     delete vertexShader;
     delete fragmentShader;
 
-    VAO vao1;
-    vao1.PushVBOValue(Matrix<float>(vertices, 3, 3));
-    vao1.PushVBOValue(Matrix<float>(color, 3, 3));
-    vao1.SetVBOValue();
+    Resource vao1;
+    if (vao1.PushVBOValue(Matrix<float>(vertices, 4, 3))
+                .PushVBOValue(Matrix<float>(color, 4, 3))
+                .PushVBOValue(Matrix<float>(texCoords, 4, 2)).
+                    SetEBOValue(Matrix<int>(indices, 2, 3)).
+                    SetTexture(R"(D:\arith.jpg)").Error() != nullptr) {
+        std::cout << vao1.Error() << std::endl;
+    }
 
-    shaderProgram.PushVAO(vao1);
-
-    glWindow.TestDo(shaderProgram,vao1);
+    vao1.Apply();
+    glWindow.TestDo(shaderProgram, vao1);
 
     return 0;
 }

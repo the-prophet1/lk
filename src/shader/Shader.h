@@ -15,7 +15,7 @@ public:
 
     virtual const char *Error() = 0;
 
-    virtual unsigned int GetID() const;
+    virtual unsigned int GetShaderID() const;
 
     virtual ~Shader();
 
@@ -26,7 +26,7 @@ protected:
     std::string file;
     std::string source;
     unsigned int shaderID{};
-    const char *error{};
+    std::string error{};
     char compileError[CompileInfoSize]{};
 };
 

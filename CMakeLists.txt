@@ -16,8 +16,8 @@ add_executable(lk
         lib/glad.c
         src/GlWindow.cpp
         src/GlWindow.h
-        src/object/VAO.cpp
-        src/object/VAO.h
+        src/object/Resource.cpp
+        src/object/Resource.h
         src/tool/Matrix.hpp
         src/shader/VertexShader.cpp
         src/shader/VertexShader.h
@@ -26,6 +26,6 @@ add_executable(lk
         src/shader/Shader.cpp
         src/shader/Shader.h
         src/shader/ShaderProgram.cpp
-        src/shader/ShaderProgram.h lib/include/stb_image.h)
+        src/shader/ShaderProgram.h lib/include/stb_image.h src/texture/Texture.cpp src/texture/Texture.h)
 
 target_link_libraries(lk glfw3 pthread)

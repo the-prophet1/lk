@@ -3,7 +3,7 @@
 
 #include <vector>
 
-template <typename T>
+template<typename T>
 class Matrix {
 public:
     Matrix(T matrix[], int row, int column);
@@ -16,11 +16,13 @@ public:
 
     const T *Data();
 
-    int Column();
+    int Column() const;
 
-    int Row();
+    int Row() const;
 
-    const std::vector<T>& GetM();
+    const std::vector<T> &GetM();
+
+    bool Empty();
 
 private:
     std::vector<T> m;
@@ -48,12 +50,12 @@ const T *Matrix<T>::Data() {
 }
 
 template<typename T>
-int Matrix<T>::Column() {
+int Matrix<T>::Column() const {
     return column;
 }
 
 template<typename T>
-int Matrix<T>::Row() {
+int Matrix<T>::Row() const {
     return row;
 }
 
@@ -71,6 +73,11 @@ void Matrix<T>::Set(T *matrix, int r, int c) {
 template<typename T>
 const std::vector<T> &Matrix<T>::GetM() {
     return m;
+}
+
+template<typename T>
+bool Matrix<T>::Empty() {
+    return m.empty();
 }
 
 #endif //LK_MATRIX_HPP
