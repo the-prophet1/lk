@@ -1,5 +1,3 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <cmath>
 #include <ctime>
 #include <iostream>
@@ -85,4 +83,8 @@ void GlWindow::TestDo(ShaderProgram &shaderProgram, const Resource& vao) {
 void GlWindow::clearColor() {
     glClearColor(background.R, background.G, background.B, background.A);
     glClear(GL_COLOR_BUFFER_BIT);
+}
+
+GLFWwindow *GlWindow::GetGlWindow() {
+    return glWindow;
 }

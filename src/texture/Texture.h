@@ -7,14 +7,11 @@ class Texture {
 public:
     Texture() = default;
 
-    explicit Texture(const std::string& file);
-
     bool Load(const std::string& file);
 
     bool Empty();
 
     ~Texture();
-
 
 public:
     int width{};

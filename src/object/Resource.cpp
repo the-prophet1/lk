@@ -9,7 +9,7 @@ Resource::Resource() {
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
     glGenBuffers(1, &ebo);
-    glGenTextures(1, &textureID);
+
 }
 
 Resource &Resource::bindVBO() {
@@ -33,8 +33,10 @@ Resource &Resource::applyVAO() {
 
     bindVBO();
     glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer.data(), GL_STATIC_DRAW);
-    bindEBO();
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.ByteSize(), indices.Data(), GL_STATIC_DRAW);
+    if (!indices.Empty()) {
+        bindEBO();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.ByteSize(), indices.Data(), GL_STATIC_DRAW);
+    }
 
     int index = 0;
     for (int i = 0; i < matrices.size(); ++i) {
@@ -104,10 +106,6 @@ unsigned int Resource::GetEboID() const {
     return ebo;
 }
 
-unsigned int Resource::GetTextureID() const {
-    return textureID;
-}
-
 Resource &Resource::Apply() {
     if (!error.empty()) {
         return *this;
@@ -120,18 +118,22 @@ Resource &Resource::Apply() {
         }
     }
 
-    if (!texture.Empty()) {
-        applyTexture();
-    }
-
     return *this;
 }
 
-Resource &Resource::SetTexture(const std::string &file) {
+Resource &Resource::PushTexture(const string &file) {
+    Texture texture;
     if (!texture.Load(file)) {
         error = "can't load file";
         return *this;
     }
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    bindTexture(textureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width, texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    unbindTexture();
+    textureIDs.push_back(textureID);
     return *this;
 }
 
@@ -139,23 +141,15 @@ const char *Resource::Error() {
     return error.c_str();
 }
 
-Resource &Resource::applyTexture() {
-    bindTexture();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width, texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    unbindTexture();
-    return *this;
-}
-
-Resource &Resource::bindTexture() {
+Resource &Resource::bindTexture(unsigned int id) {
     glBindVertexArray(vao);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    glBindTexture(GL_TEXTURE_2D, id);
     return *this;
 }
 
 Resource &Resource::unbindTexture() {
-    glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+    glBindVertexArray(0);
     return *this;
 }
 
@@ -167,5 +161,11 @@ Resource::~Resource() {
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(1, &vbo);
     glDeleteBuffers(1, &ebo);
-    glad_glDeleteTextures(1, &textureID);
+    for (unsigned int &textureID : textureIDs) {
+        glad_glDeleteTextures(1, &textureID);
+    }
+}
+
+const std::vector<unsigned int> &Resource::GetTextureIDs() const {
+    return textureIDs;
 }

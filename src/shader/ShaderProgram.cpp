@@ -65,6 +65,18 @@ ShaderProgram &ShaderProgram::SetUniform(const std::string &name, int v1, int v2
     return *this;
 }
 
+ShaderProgram &ShaderProgram::SetUniform(const string &name, int v1) {
+    if (!error.empty()) {
+        return *this;
+    }
+    int location = findUniform(name);
+    if (!error.empty()) {
+        return *this;
+    }
+    glUniform1i(location, v1);
+    return *this;
+}
+
 int ShaderProgram::findUniform(const std::string &name) {
     if (!error.empty()) {
         return -1;
@@ -83,11 +95,14 @@ ShaderProgram &ShaderProgram::DrawTriangle(const Resource &resource) {
         return *this;
     }
     glUseProgram(programID);
-    if (resource.GetTextureID() != 0) {
-        glBindTexture(GL_TEXTURE_2D, resource.GetTextureID());
-    }
+
     if (resource.GetVaoID() != 0) {
         glBindVertexArray(resource.GetVaoID());
+    }
+
+    for (int i = 0; i < resource.GetTextureIDs().size(); i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, resource.GetTextureIDs()[i]);
     }
 
     glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -99,12 +114,15 @@ ShaderProgram &ShaderProgram::DrawElements(const Resource &resource) {
         return *this;
     }
     glUseProgram(programID);
-    if (resource.GetTextureID() != 0) {
-        glBindTexture(GL_TEXTURE_2D, resource.GetTextureID());
-    }
+
     if (resource.GetVaoID() != 0) {
         glBindVertexArray(resource.GetVaoID());
     }
+    for (int i = 0; i < resource.GetTextureIDs().size(); i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, resource.GetTextureIDs()[i]);
+    }
+
     glDrawElements(GL_TRIANGLES, resource.GetIndices().Row() * resource.GetIndices().Column(), GL_UNSIGNED_INT,
                    nullptr);
     return *this;
@@ -113,3 +131,5 @@ ShaderProgram &ShaderProgram::DrawElements(const Resource &resource) {
 ShaderProgram::~ShaderProgram() {
     glDeleteProgram(programID);
 }
+
+

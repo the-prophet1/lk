@@ -4,9 +4,6 @@
 
 #include "Texture.h"
 
-Texture::Texture(const std::string &file) {
-    data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
-}
 
 Texture::~Texture() {
     stbi_image_free(data);

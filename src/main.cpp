@@ -63,14 +63,19 @@ int main() {
     Resource vao1;
     if (vao1.PushVBOValue(Matrix<float>(vertices, 4, 3))
                 .PushVBOValue(Matrix<float>(color, 4, 3))
-                .PushVBOValue(Matrix<float>(texCoords, 4, 2)).
-                    SetEBOValue(Matrix<int>(indices, 2, 3)).
-                    SetTexture(R"(D:\arith.jpg)").Error() != nullptr) {
+                .PushVBOValue(Matrix<float>(texCoords, 4, 2))
+                .SetEBOValue(Matrix<int>(indices, 2, 3))
+                .PushTexture(R"(D:\arith.jpg)").PushTexture(R"(D:\tifa.jpg)")
+                .Error() != nullptr) {
         std::cout << vao1.Error() << std::endl;
     }
 
+    shaderProgram.SetUniform("ourTexture1",0);
+    shaderProgram.SetUniform("ourTexture2",1);
+
     vao1.Apply();
-    glWindow.TestDo(shaderProgram, vao1);
+
+    glWindow.TestDo(shaderProgram,vao1);
 
     return 0;
 }

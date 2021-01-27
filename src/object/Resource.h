@@ -27,7 +27,7 @@ public:
 
     Resource &SetEBOValue(Matrix<int> &&matrix);
 
-    Resource &SetTexture(const std::string &file);
+    Resource &PushTexture(const std::string &file);
 
     Resource &Apply();
 
@@ -37,7 +37,7 @@ public:
 
     unsigned int GetEboID() const;
 
-    unsigned int GetTextureID() const;
+    const std::vector<unsigned int>& GetTextureIDs() const;
 
     const char *Error();
 
@@ -50,24 +50,21 @@ private:
 
     Resource &bindEBO();
 
-    Resource &bindTexture();
+    Resource &bindTexture(unsigned int id);
 
     Resource &unbindTexture();
 
     Resource &applyVAO();
 
-    Resource &applyTexture();
-
-
 private:
     unsigned int vao{};
     unsigned int vbo{};
     unsigned int ebo{};
-    unsigned int textureID{};
+    std::vector<unsigned int> textureIDs;
 
     std::vector<Matrix<float>> matrices{};
     Matrix<int> indices{};
-    Texture texture;
+    std::vector<Texture> textures;
 
     string error{};
 };

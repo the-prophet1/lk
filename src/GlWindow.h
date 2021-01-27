@@ -31,6 +31,8 @@ public:
 
     ~GlWindow();
 
+    GLFWwindow *GetGlWindow();
+
 private:
     void initErrorMap();
 
@@ -39,9 +41,9 @@ private:
     static void resizeWindow(GLFWwindow *window, int width, int height);
 
 private:
-    GLFWwindow *glWindow;
+    GLFWwindow *glWindow{};
     std::map<int, const char *> errMap;
-    RGBA background;
+    RGBA background{};
 };
 
 

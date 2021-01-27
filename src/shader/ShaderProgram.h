@@ -19,6 +19,8 @@ public:
 
     ShaderProgram &SetUniform(const string &name, int v1, int v2, int v3, int v4);
 
+    ShaderProgram &SetUniform(const string &name, int v1);
+
     ShaderProgram &DrawTriangle(const Resource& resource);
 
     ShaderProgram &DrawElements(const Resource& resource);
