@@ -77,6 +77,18 @@ ShaderProgram &ShaderProgram::SetUniform(const string &name, int v1) {
     return *this;
 }
 
+ShaderProgram &ShaderProgram::SetUniform(const string &name,glm::mat4& mat4) {
+    if (!error.empty()) {
+        return *this;
+    }
+    int location = findUniform(name);
+    if (!error.empty()) {
+        return *this;
+    }
+    glUniformMatrix4fv(location,1,GL_FALSE,glm::value_ptr(mat4));
+    return *this;
+}
+
 int ShaderProgram::findUniform(const std::string &name) {
     if (!error.empty()) {
         return -1;
@@ -114,6 +126,9 @@ ShaderProgram &ShaderProgram::DrawElements(const Resource &resource) {
         return *this;
     }
     glUseProgram(programID);
+    for (auto & handle : handles) {
+        handle(*this);
+    }
 
     if (resource.GetVaoID() != 0) {
         glBindVertexArray(resource.GetVaoID());
@@ -131,5 +146,12 @@ ShaderProgram &ShaderProgram::DrawElements(const Resource &resource) {
 ShaderProgram::~ShaderProgram() {
     glDeleteProgram(programID);
 }
+
+ShaderProgram &ShaderProgram::RegisterUniform(func handle) {
+    handles.push_back(handle);
+    return *this;
+}
+
+
 
 

@@ -26,6 +26,8 @@ add_executable(lk
         src/shader/Shader.cpp
         src/shader/Shader.h
         src/shader/ShaderProgram.cpp
-        src/shader/ShaderProgram.h lib/include/stb_image.h src/texture/Texture.cpp src/texture/Texture.h)
+        src/shader/ShaderProgram.h
+        src/texture/Texture.cpp
+        src/texture/Texture.h)
 
 target_link_libraries(lk glfw3 pthread)

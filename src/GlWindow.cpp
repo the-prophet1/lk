@@ -3,6 +3,9 @@
 #include <iostream>
 #include <pthread_time.h>
 #include "GlWindow.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 GlWindow::GlWindow(int glVersionMajor, int glVersionMinor, int glProfile) {
@@ -67,11 +70,13 @@ void GlWindow::SetClearColor(float red, float green, float blue, float alpha) {
 }
 
 
-void GlWindow::TestDo(ShaderProgram &shaderProgram, const Resource& vao) {
+void GlWindow::TestDo(ShaderProgram &shaderProgram, const Resource &vao) {
     while (!glfwWindowShouldClose(glWindow)) {
         clearColor();
-        if (shaderProgram.DrawElements(vao).Error() != nullptr){
-            std::cout<< shaderProgram.Error() << std::endl;
+
+
+        if (shaderProgram.DrawElements(vao).Error() != nullptr) {
+            std::cout << shaderProgram.Error() << std::endl;
         }
 
         // check event
