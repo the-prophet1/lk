@@ -134,6 +134,7 @@ Resource &Resource::PushTexture(const string &file) {
     glGenerateMipmap(GL_TEXTURE_2D);
     unbindTexture();
     textureIDs.push_back(textureID);
+
     return *this;
 }
 
@@ -168,4 +169,8 @@ Resource::~Resource() {
 
 const std::vector<unsigned int> &Resource::GetTextureIDs() const {
     return textureIDs;
+}
+
+const std::vector<Matrix<float>>& Resource::GetVaos() const {
+    return matrices;
 }

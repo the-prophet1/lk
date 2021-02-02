@@ -33,10 +33,10 @@ public:
 
     GLFWwindow *GetGlWindow();
 
+    void ClearColor();
+
 private:
     void initErrorMap();
-
-    void clearColor();
 
     static void resizeWindow(GLFWwindow *window, int width, int height);
 

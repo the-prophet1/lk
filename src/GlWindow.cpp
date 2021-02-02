@@ -47,7 +47,7 @@ void GlWindow::resizeWindow(GLFWwindow *window, int width, int height) {
 void GlWindow::Do() {
     while (!glfwWindowShouldClose(glWindow)) {
 
-        clearColor();
+        ClearColor();
 
         // check event
         glfwSwapBuffers(glWindow);
@@ -71,11 +71,11 @@ void GlWindow::SetClearColor(float red, float green, float blue, float alpha) {
 
 
 void GlWindow::TestDo(ShaderProgram &shaderProgram, const Resource &vao) {
+    glEnable(GL_DEPTH_TEST);
+
     while (!glfwWindowShouldClose(glWindow)) {
-        clearColor();
-
-
-        if (shaderProgram.DrawElements(vao).Error() != nullptr) {
+        ClearColor();
+        if (shaderProgram.DrawTriangle(vao).Error() != nullptr) {
             std::cout << shaderProgram.Error() << std::endl;
         }
 
@@ -85,9 +85,10 @@ void GlWindow::TestDo(ShaderProgram &shaderProgram, const Resource &vao) {
     }
 }
 
-void GlWindow::clearColor() {
+void GlWindow::ClearColor() {
+
     glClearColor(background.R, background.G, background.B, background.A);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 GLFWwindow *GlWindow::GetGlWindow() {

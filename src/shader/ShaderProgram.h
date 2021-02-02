@@ -4,6 +4,7 @@
 
 #include "Shader.h"
 #include "../object/Resource.h"
+#include "../GlWindow.h"
 #include <glm/detail/type_mat.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -19,6 +20,8 @@ public:
 
     ~ShaderProgram();
 
+    ShaderProgram &Bind(GlWindow& glWindow);
+
     ShaderProgram &Link(std::initializer_list<Shader *> il);
 
     ShaderProgram &SetUniform(const string &name, float v1, float v2, float v3, float v4);
@@ -30,6 +33,8 @@ public:
     ShaderProgram &SetUniform(const string &name,glm::mat4& mat4);
 
     ShaderProgram &RegisterUniform(func handle);
+
+    ShaderProgram &RegisterUniformDraw(func handle);
 
     ShaderProgram &DrawTriangle(const Resource& resource);
 
@@ -47,7 +52,9 @@ private:
     unsigned int programID;
     string error{};
     char linkError[CompileInfoSize]{};
+    std::vector<func> drawHandles;
     std::vector<func> handles;
+    GlWindow& window;
 };
 
 

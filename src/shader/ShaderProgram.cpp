@@ -106,18 +106,27 @@ ShaderProgram &ShaderProgram::DrawTriangle(const Resource &resource) {
     if (!error.empty()) {
         return *this;
     }
-    glUseProgram(programID);
-
-    if (resource.GetVaoID() != 0) {
-        glBindVertexArray(resource.GetVaoID());
-    }
 
     for (int i = 0; i < resource.GetTextureIDs().size(); i++) {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, resource.GetTextureIDs()[i]);
     }
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glUseProgram(programID);
+    if (resource.GetVaoID() != 0) {
+        glBindVertexArray(resource.GetVaoID());
+    }
+
+    for (auto & handle : handles) {
+        handle(*this);
+    }
+
+    for (auto & handle : drawHandles) {
+        handle(*this);
+        glDrawArrays(GL_TRIANGLES, 0, resource.GetVaos()[0].Row());
+    }
+
+
     return *this;
 }
 
@@ -149,6 +158,16 @@ ShaderProgram::~ShaderProgram() {
 
 ShaderProgram &ShaderProgram::RegisterUniform(func handle) {
     handles.push_back(handle);
+    return *this;
+}
+
+ShaderProgram &ShaderProgram::RegisterUniformDraw(func handle) {
+    drawHandles.push_back(handle);
+    return *this;
+}
+
+ShaderProgram &ShaderProgram::Bind(GlWindow &glWindow) {
+    window = glWindow;
     return *this;
 }
 

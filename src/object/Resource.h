@@ -19,16 +19,20 @@ public:
 
     ~Resource();
 
+    /*      Save all matrices through an array      */
     Resource &PushVBOValue(Matrix<float> &matrix);
 
     Resource &PushVBOValue(Matrix<float> &&matrix);
 
+    /* only one EBO matrix */
     Resource &SetEBOValue(Matrix<int> &matrix);
 
     Resource &SetEBOValue(Matrix<int> &&matrix);
 
+    /* Save all Texture through an array */
     Resource &PushTexture(const std::string &file);
 
+    /* CPU memory move to GPU memory */
     Resource &Apply();
 
     unsigned int GetVaoID() const;
@@ -37,11 +41,13 @@ public:
 
     unsigned int GetEboID() const;
 
-    const std::vector<unsigned int>& GetTextureIDs() const;
+    const  std::vector<Matrix<float>>& GetVaos() const;
+
+    const std::vector<unsigned int> &GetTextureIDs() const;
 
     const char *Error();
 
-    const Matrix<int>& GetIndices() const;
+    const Matrix<int> &GetIndices() const;
 
 private:
     Resource &unbindVBO();
